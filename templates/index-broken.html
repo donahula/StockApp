@@ -15,7 +15,7 @@
 		<div>
 			<h1 style="text-align: center;">Nasdaq 100 Stock Info</h1><br>
 		</div>
-		<div style="display:flex">
+		<div style="display:flex;justify-content: center;">
 			<div id="dropdownselection" style="margin:7px;"> <!--source for multiselect drop down: https://codepen.io/bruce0205/pen/dvZJeJ-->
 				  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
 				  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -27,53 +27,39 @@
 				<script>
 						$(document).ready(function() {
 							$('#multiple-checkboxes').multiselect({
-							  includeSelectAllOption: true,
+							  includeSelectAllOption: false,
 							});
 						});
 				</script>
 				<div class="">
 					<strong>Select Stock(s):</strong>
-					<select id="multiple-checkboxes" multiple="multiple">
+					<select id="stock-dropdown" multiple="multiple" onchange="show(this)">
 						<option value="php">PHP</option>
 						<option value="javascript">JavaScript</option>
 						<option value="java">Java</option>
 						<option value="sql">SQL</option>
 						<option value="jquery">Jquery</option>
 						<option value=".net">.Net</option>
+
 					</select>
+					<!--
+					<script>
+						var json = {{ stocks }}
+
+						for(var i in json) {
+							$('#stock-dropdown').append('<option value="' + json[i] + '">' + json[i] + '</option>');
+						}
+					</script>
+					-->
 				</div>
 			</div>
 			
 			<div style="margin:10;"> <strong>Start Date:</strong> <input type="text" id="startdate"></div>
 			<div style="margin:10;"> <strong>End Date:</strong> <input type="text" id="enddate"></div>
-			<input type="submit" value="Submit" style="height:30px; margin:8px;">
+			<input type="button" value="Submit" style="height:30px; margin:8px;">
 			
 		</div>
+
 </body>
-
-<script>
-    function populateSelect() {
-        // THE JSON ARRAY.
-        var birds = [
-            {"ID": "001", "Bird_Name": "Eurasian Collared-Dove"},
-            {"ID": "002", "Bird_Name": "Bald Eagle"},
-            {"ID": "003", "Bird_Name": "Cooper's Hawk"},
-        ];
-
-        var ele = document.getElementById('sel');
-        for (var i = 0; i < birds.length; i++) {
-            // POPULATE SELECT ELEMENT WITH JSON.
-            ele.innerHTML = ele.innerHTML +
-                '<option value="' + birds[i]['ID'] + '">' + birds[i]['Bird_Name'] + '</option>';
-        }
-    }
-
-    function show(ele) {
-        // GET THE SELECTED VALUE FROM <select> ELEMENT AND SHOW IT.
-        var msg = document.getElementById('msg');
-        msg.innerHTML = 'Selected Bird: <b>' + ele.options[ele.selectedIndex].text + '</b> </br>' +
-            'ID: <b>' + ele.value + '</b>';
-    }
-</script>
 
 </html>
