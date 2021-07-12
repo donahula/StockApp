@@ -1,14 +1,12 @@
 <html>
 	<head>
-		<!-- Include Twitter Bootstrap and jQuery (source: https://davidstutz.github.io/bootstrap-multiselect/) -->
-		<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css"/>
-		<script type="text/javascript" src="js/jquery.min.js"></script>
-		<script type="text/javascript" src="js/bootstrap.min.js"></script>
-		 
-		<!-- Include the plugin's CSS and JS: -->
-		<script type="text/javascript" src="js/bootstrap-multiselect.js"></script>
-		<link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css"/>
-		
+		<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+        <link rel="stylesheet" href="css/bootstrap-multiselect/bootstrap-multiselect.css" type="text/css">
+        <script type="text/javascript" src="js/bootstrap-multiselect/bootstrap-multiselect.js"></script>
 
 	</head>
 	<body>
@@ -16,19 +14,18 @@
 			<h1 style="text-align: center;">Nasdaq 100 Stock Info</h1><br>
 		</div>
 		<div>
-			<select id="example-getting-started" multiple="multiple">
-				<option value="cheese">Cheese</option>
-				<option value="tomatoes">Tomatoes</option>
-				<option value="mozarella">Mozzarella</option>
-				<option value="mushrooms">Mushrooms</option>
-				<option value="pepperoni">Pepperoni</option>
-				<option value="onions">Onions</option>
-			</select>
 			<script type="text/javascript">
-			$(document).ready(function() {
-				$('#example-getting-started').multiselect();
-			});
+				$(document).ready(function() {
+					$('#multi-select-demo').multiselect();
+				});
 			</script>
+			<select id="multi-select-demo" multiple="multiple">
+				<option value="jQuery">jQuery tutorial</option>
+				<option value="Bootstrap">Bootstrap Tips</option>
+				<option value="HTML">HTML</option>
+				<option value="CSS">CSS tricks</option>
+				<option value="angular">Angular JS</option>
+			</select>
 		</div>
 	</body>
 </html>
