@@ -1,4 +1,32 @@
-<div>
-    <h1>Welcome!</h1><br>
-    <p>This site has been visited {{ count }} times.</p>
-</div>
+<html>
+		<!-- Include Twitter Bootstrap and jQuery (source: https://davidstutz.github.io/bootstrap-multiselect/) -->
+	<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css"/>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	 
+	<!-- Include the plugin's CSS and JS: -->
+	<script type="text/javascript" src="js/bootstrap-multiselect.js"></script>
+	<link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css"/>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#example-getting-started').multiselect();
+		});
+	</script>
+	
+	<body>
+		<div>
+			<h1 style="text-align: center;">Nasdaq 100 Stock Info</h1><br>
+		</div>
+		<div>
+			<select id="example-getting-started" multiple="multiple">
+			<option value="cheese">Cheese</option>
+			<option value="tomatoes">Tomatoes</option>
+			<option value="mozarella">Mozzarella</option>
+			<option value="mushrooms">Mushrooms</option>
+			<option value="pepperoni">Pepperoni</option>
+			<option value="onions">Onions</option>
+</select>
+		</div>
+	</body>
+</html>
