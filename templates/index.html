@@ -1,14 +1,6 @@
 <html>
 	<head>
-		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-		
-		  <script>
-			  $( function() {
-				$( "#startdate" ).datepicker();
-			  } );
-		  </script>
+		<script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
 		
 	</head>
 	<body>
@@ -47,37 +39,18 @@
 				</div>
 			</div>
 			
-			<div style="margin:10;"> <strong>Start Date:</strong> <input type="text" id="startdate"></div>
-			<div style="margin:10;"> <strong>End Date:</strong> <input type="text" id="enddate"></div>
-			<input type="submit" value="Submit" style="height:30px; margin:8px;">
+			<div style="margin:10;"> <strong>Date Range:</strong> <input id="datepicker" type="text"></div>
+			<script>
+				new Litepicker({
+				  element: document.getElementById('datepicker'),
+				  singleMode: false
+				})
+			</script>
 			
+			<input type="submit" value="Submit" style="height:30px; margin:8px;">
+
+		
 		</div>
 </body>
-
-
-<!--
-    function populateSelect() {
-        // THE JSON ARRAY.
-        var birds = [
-            {"ID": "001", "Bird_Name": "Eurasian Collared-Dove"},
-            {"ID": "002", "Bird_Name": "Bald Eagle"},
-            {"ID": "003", "Bird_Name": "Cooper's Hawk"},
-        ];
-
-        var ele = document.getElementById('sel');
-        for (var i = 0; i < birds.length; i++) {
-            // POPULATE SELECT ELEMENT WITH JSON.
-            ele.innerHTML = ele.innerHTML +
-                '<option value="' + birds[i]['ID'] + '">' + birds[i]['Bird_Name'] + '</option>';
-        }
-    }
-
-    function show(ele) {
-        // GET THE SELECTED VALUE FROM <select> ELEMENT AND SHOW IT.
-        var msg = document.getElementById('msg');
-        msg.innerHTML = 'Selected Bird: <b>' + ele.options[ele.selectedIndex].text + '</b> </br>' +
-            'ID: <b>' + ele.value + '</b>';
-    }
--->
 
 </html>
