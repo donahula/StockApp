@@ -1,13 +1,13 @@
 <html>
 	<head>
-		  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-		  <link rel="stylesheet" href="/resources/demos/style.css">
-		  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-		  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		
 		  <script>
-		  $( function() {
-			$( "#datepicker" ).datepicker();
-		  } );
+			  $( function() {
+				$( "#startdate" ).datepicker();
+			  } );
 		  </script>
 		
 	</head>
@@ -15,8 +15,8 @@
 		<div>
 			<h1 style="text-align: center;">Nasdaq 100 Stock Info</h1><br>
 		</div>
-		<div style="display:flex">
-			<div id="dropdownselection" style="margin:7px;"> <!--source for multiselect drop down: https://codepen.io/bruce0205/pen/dvZJeJ-->
+		<div style="display:flex; justify-content:center">
+			<div id="dropdownselection" style="margin:7px;"> <!--source for multiselect dropdown: https://codepen.io/bruce0205/pen/dvZJeJ-->
 				  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
 				  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 				  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
@@ -27,19 +27,22 @@
 				<script>
 						$(document).ready(function() {
 							$('#multiple-checkboxes').multiselect({
-							  includeSelectAllOption: true,
+							  includeSelectAllOption: false,
 							});
 						});
 				</script>
 				<div class="">
 					<strong>Select Stock(s):</strong>
 					<select id="multiple-checkboxes" multiple="multiple">
-						<option value="php">PHP</option>
-						<option value="javascript">JavaScript</option>
-						<option value="java">Java</option>
-						<option value="sql">SQL</option>
-						<option value="jquery">Jquery</option>
-						<option value=".net">.Net</option>
+						<!--<option value="AAPL">AAPL</option>-->
+						<script>
+							let stock_list = {{ stocks | tojson }};
+							document.write(stock_list);
+							for (i in stock_list){ 
+								$('#multiple-checkboxes').append('<option value="' + stock_list[i] + '">' + stock_list[i] +'</option>');
+							}
+						</script>
+
 					</select>
 				</div>
 			</div>
@@ -51,7 +54,8 @@
 		</div>
 </body>
 
-<script>
+
+<!--
     function populateSelect() {
         // THE JSON ARRAY.
         var birds = [
@@ -74,6 +78,6 @@
         msg.innerHTML = 'Selected Bird: <b>' + ele.options[ele.selectedIndex].text + '</b> </br>' +
             'ID: <b>' + ele.value + '</b>';
     }
-</script>
+-->
 
 </html>

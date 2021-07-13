@@ -9,7 +9,7 @@ app = Flask(__name__)
 def index():
 	f = open('nasdaq_100_stock_list.json',)
 	stock_list = json.load(f)
-	print(stock_list)
+
 	return render_template("index.html", stocks=stock_list)
 	
 if __name__ == "__main__":
