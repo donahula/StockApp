@@ -29,10 +29,10 @@
 						<!--<option value="AAPL">AAPL</option>-->
 						<script>
 							let stock_list = {{ stocks | tojson }};
-							document.write(stock_list);
 							for (i in stock_list){ 
 								$('#multiple-checkboxes').append('<option value="' + stock_list[i] + '">' + stock_list[i] +'</option>');
 							}
+							
 						</script>
 
 					</select>
@@ -46,10 +46,40 @@
 				  singleMode: false
 				})
 			</script>
-			
-			<input type="submit" value="Submit" style="height:30px; margin:8px;">
+			<script>
+				function get_data() {
+					var selected_stocks = $("li[class=active] input").map(function() {
+						return $(this).val();
+					}).get();
+				
+					fetch(`${window.origin}/data_query`, {
+						  method: "POST",
+						  credentials: "include",
+						  body: JSON.stringify(selected_stocks),
+						  cache: "no-cache",
+						  headers: new Headers({
+							"content-type": "application/json"
+						  })
+						})
+						  .then(function (response) {
+							if (response.status !== 200) {
+							  console.log(`Looks like there was a problem. Status code: ${response.status}`);
+							  return;
+							}
+							response.json().then(function (data) {
+							  console.log(data);
+							});
+						  })
+						  .catch(function (error) {
+							console.log("Fetch error: " + error);
+						  });
 
-		
+				
+				}
+
+			</script>
+			<input type="button" id="submit" value="Submit" style="height:30px; margin:8px;" onclick="get_data();">
+
 		</div>
 </body>
 
