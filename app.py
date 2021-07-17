@@ -1,10 +1,7 @@
 from flask import Flask, render_template
 from flask import request, jsonify
-from yahoo_finance import Share
 import json
 from yahoofinancials import YahooFinancials
-
-ALPHA_VANTAGE_API_KEY = 'TTZ38CINRJYC1KGO' 
 
 app = Flask(__name__)
 
