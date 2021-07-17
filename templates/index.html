@@ -2,6 +2,13 @@
 	<head>
 		<script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
 		
+		<script src="https://code.highcharts.com/highcharts.js"></script>
+		<script src="https://code.highcharts.com/modules/series-label.js"></script>
+		<script src="https://code.highcharts.com/modules/exporting.js"></script>
+		<script src="https://code.highcharts.com/modules/export-data.js"></script>
+		<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+		<!--<link rel="stylesheet" href= "{{ url_for('static',filename='css/mystyle.css') }}>-->
+		
 	</head>
 	<body>
 		<div>
@@ -47,6 +54,7 @@
 				})
 			</script>
 			<script>
+				var series_data = [];
 				function get_data() {
 					var selected_stocks = $("li[class=active] input").map(function() {
 						return $(this).val();
@@ -68,7 +76,15 @@
 							}
 							response.json().then(function (data) {
 							  console.log(data);
-							});
+							  var keys = Object.keys(data);
+							  for (var i = 0; i < 10; i++){
+							  //create your value
+							  var d = Math.floor((Math.random() * 10) + 1);
+							  //push an array into your array
+							  mySeries.push([i,d]);
+							}
+							series_data = data;
+							
 						  })
 						  .catch(function (error) {
 							console.log("Fetch error: " + error);
@@ -80,6 +96,70 @@
 			</script>
 			<input type="button" id="submit" value="Submit" style="height:30px; margin:8px;" onclick="get_data();">
 
+		</div>
+		<div>
+			<figure class="highcharts-figure">
+				<div id="container"></div>
+			</figure>
+		</div>
+		<script>
+			
+			Highcharts.chart('container', {
+
+				title: {
+					text: 'Daily Stock Price'
+				},
+
+				xAxis: {
+						type: 'datetime',
+						dateTimeLabelFormats: {
+						   day: '%d %b %Y'    //ex- 01 Jan 2016
+						}
+				},
+				
+				yAxis: {
+					title: {
+						text: 'Price ($)'
+					}
+				},
+
+				legend: {
+					layout: 'vertical',
+					align: 'right',
+					verticalAlign: 'middle'
+				},
+
+				plotOptions: {
+					series: {
+						label: {
+							connectorAllowed: false
+						},
+						pointStart: Date.UTC(2021, 6, 5),
+								pointInterval: 3600 * 1000 * 24// 24 hours
+					}
+				},
+
+				series: series_data,
+
+				responsive: {
+					rules: [{
+						condition: {
+							maxWidth: 500
+						},
+						chartOptions: {
+							legend: {
+								layout: 'horizontal',
+								align: 'center',
+								verticalAlign: 'bottom'
+							}
+						}
+					}]
+				}
+
+			});
+		</script>
+		<div>
+			Current Stock Price
 		</div>
 </body>
 

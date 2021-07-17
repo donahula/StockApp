@@ -1,9 +1,8 @@
 from flask import Flask, render_template
+from flask import request, jsonify
 from yahoo_finance import Share
 import json
-from flask import request
-import yfinance as yf
-from alpha_vantage.timeseries import TimeSeries
+from yahoofinancials import YahooFinancials
 
 ALPHA_VANTAGE_API_KEY = 'TTZ38CINRJYC1KGO' 
 
@@ -20,18 +19,14 @@ def index():
 def data_query():
 	req = request.get_json()
 	
-	ts = TimeSeries(key=ALPHA_VANTAGE_API_KEY, output_format='json')
-	print(help(ts))
-	#testing = ts.get_daily_adjusted('AAPL', outputsize='compact')
-	print(testing)
-	
-	#for i in req:
-#		print(i)
-		#print(yf.download(i,'2018-01-01','2018-01-04'))
+	yf = YahooFinancials(req)
+	stock_data = yf.get_historical_price_data("2021-07-09", "2021-07-16", "daily")
+	print(json.dumps(stock_data, indent = 4))
+	#test_data = [{'name': 'APPL', 'data': [43.34, 52.03, 57.77, 39.65]}, {'name': 'MSFT', 'data': [24.16, 40.64, 29.42, 36.54]}, {'name': 'AMZN', 'data': [117.44, 177.22, 160.05, 197.71]}]
 	
 	
 	
-	return "test"
+	return jsonify(stock_data)
 
 if __name__ == "__main__":
 	app.run()
