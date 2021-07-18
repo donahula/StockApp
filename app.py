@@ -15,10 +15,9 @@ def index():
 @app.route("/data_query", methods=["POST"])
 def data_query():
 	req = request.get_json()
-	
-	yf = YahooFinancials(req)
-	stock_data = yf.get_historical_price_data("2021-07-09", "2021-07-16", "daily")
-	
+	yf = YahooFinancials(req['stocks'])
+
+	stock_data = yf.get_historical_price_data(req['start_date'], req['end_date'], "daily")
 	return jsonify(stock_data)
 
 if __name__ == "__main__":

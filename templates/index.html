@@ -9,6 +9,9 @@
 		<script src="https://code.highcharts.com/modules/accessibility.js"></script>
 		<!--<link rel="stylesheet" href= "{{ url_for('static',filename='css/mystyle.css') }}>-->
 		
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+		<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+		
 	</head>
 	<body>
 		<div>
@@ -48,10 +51,15 @@
 			
 			<div style="margin:10;"> <strong>Date Range:</strong> <input id="datepicker" type="text"></div>
 			<script>
-				new Litepicker({
+				/*let date_selection = new Litepicker({
 				  element: document.getElementById('datepicker'),
 				  singleMode: false
-				})
+				})*/
+				const fp = flatpickr("#datepicker", {
+					mode: "range",
+					allowInput: false,
+					dateFormat: "Y-m-d",
+				});
 			</script>
 
 			<input type="button" id="submit" value="Create Chart" style="height:30px; margin:8px;" onclick="get_data();">
@@ -73,11 +81,19 @@
 					var selected_stocks = $("li[class=active] input").map(function() {
 						return $(this).val();
 					}).get();
-				
+					
+					start = fp.selectedDates[0].getFullYear() + '-' + (fp.selectedDates[0].getMonth() + 1) + '-' + fp.selectedDates[0].getDate()
+					end = fp.selectedDates[1].getFullYear() + '-' + (fp.selectedDates[1].getMonth() + 1) + '-' + (fp.selectedDates[1].getDate() + 1)
+					
+					params = {
+						stocks: selected_stocks,
+						start_date: start,
+						end_date: end
+					}
 					fetch(`${window.origin}/data_query`, {
 						  method: "POST",
 						  credentials: "include",
-						  body: JSON.stringify(selected_stocks),
+						  body: JSON.stringify(params),
 						  cache: "no-cache",
 						  headers: new Headers({
 							"content-type": "application/json"
@@ -90,27 +106,8 @@
 										return;
 									}
 									response.json().then(function (data) {
-										console.log(data);
 										raw_data = data;
-										/*logic here*/
-										
-										/*series = "["
-										for (var i = 0; i < keys.length; i++) {
-											if (i != 0) {
-												series = series + ",";
-											}
-											series = series + "{'name':'" + keys[i] + "', data:[";
-											for (var j = 0; j < raw_data[keys[i]].prices.length; j++) {
-												if (j != 0) {
-													series = series + ",";
-												}
-												series = series + raw_data[keys[i]].prices[j].close
-											}
-											series = series + "}]";
-																							/*series_x_y.push(raw_data[keys[i]].prices[j].formatted_date);*/
-												/*series_x_y.push(raw_data[keys[i]].prices[j].close);*/
-												/*series_data.push(series_x_y);
-										}*/
+
 										
 										var keys = Object.keys(raw_data);
 										for (var i = 0; i < keys.length; i++) {
@@ -190,7 +187,6 @@
 								}
 
 							}
-							console.log(chart_info);
 							setTimeout(() => {let chart = Highcharts.chart('container', chart_info);; }, 1000);
 
 
