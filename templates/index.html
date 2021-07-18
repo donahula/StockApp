@@ -55,6 +55,8 @@
 			</script>
 			<script>
 				var series_data = [];
+				var my_series = [];
+				var series_x_y = [];
 				function get_data() {
 					var selected_stocks = $("li[class=active] input").map(function() {
 						return $(this).val();
@@ -69,30 +71,53 @@
 							"content-type": "application/json"
 						  })
 						})
-						  .then(function (response) {
-							if (response.status !== 200) {
-							  console.log(`Looks like there was a problem. Status code: ${response.status}`);
-							  return;
-							}
-							response.json().then(function (data) {
-							  console.log(data);
-							  var keys = Object.keys(data);
-							  for (var i = 0; i < 10; i++){
-							  //create your value
-							  var d = Math.floor((Math.random() * 10) + 1);
-							  //push an array into your array
-							  mySeries.push([i,d]);
-							}
-							series_data = data;
+							.then(
+								function (response) {
+									if (response.status !== 200) {
+										console.log('Problem. Status code = ' + response.status);
+										return;
+									}
+									response.json().then(function (data) {
+										console.log(data);
+										raw_data = data;
+										/*logic here*/
+										var keys = Object.keys(raw_data);
+										/*series = "["
+										for (var i = 0; i < keys.length; i++) {
+											if (i != 0) {
+												series = series + ",";
+											}
+											series = series + "{'name':'" + keys[i] + "', data:[";
+											for (var j = 0; j < raw_data[keys[i]].prices.length; j++) {
+												if (j != 0) {
+													series = series + ",";
+												}
+												series = series + raw_data[keys[i]].prices[j].close
+											}
+											series = series + "}]";
+										}*/
+										for (var i = 0; i < keys.length; i++) {
+											for (var j = 0; j < raw_data[keys[i]].prices.length; j++) {
+												series_x_y.push(raw_data[keys[i]].prices[j].formatted_date);
+												series_x_y.push(raw_data[keys[i]].prices[j].close);
+												series_data.push(series_x_y);
+											}
+											my_series.push({
+												'name': keys[i],
+												data: series_data
+											});
+											series_data = [];
+											series_x_y = [];
+										}
+									});
+								}
+							)
 							
-						  })
-						  .catch(function (error) {
-							console.log("Fetch error: " + error);
-						  });
-
-				
+							.catch(function(err) {
+								console.log('Fetch Error :-S', err);
+							});
+							
 				}
-
 			</script>
 			<input type="button" id="submit" value="Submit" style="height:30px; margin:8px;" onclick="get_data();">
 
@@ -103,7 +128,14 @@
 			</figure>
 		</div>
 		<script>
-			
+		var serObj = [
+	{'name':'Series 1', data:[8,9,8,6,5,2,3,6,5,7,4,5,8,9]},
+  {'name':'Series 2', data:[8,5,6,9,8,7,4,5,2,5,8,7,8,6]}
+  ];
+
+var series = [];
+ series = my_series;
+
 			Highcharts.chart('container', {
 
 				title: {
@@ -129,7 +161,7 @@
 					verticalAlign: 'middle'
 				},
 
-				plotOptions: {
+				/*plotOptions: {
 					series: {
 						label: {
 							connectorAllowed: false
@@ -137,9 +169,9 @@
 						pointStart: Date.UTC(2021, 6, 5),
 								pointInterval: 3600 * 1000 * 24// 24 hours
 					}
-				},
+				},*/
 
-				series: series_data,
+				series: series,
 
 				responsive: {
 					rules: [{

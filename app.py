@@ -18,10 +18,6 @@ def data_query():
 	
 	yf = YahooFinancials(req)
 	stock_data = yf.get_historical_price_data("2021-07-09", "2021-07-16", "daily")
-	print(json.dumps(stock_data, indent = 4))
-	#test_data = [{'name': 'APPL', 'data': [43.34, 52.03, 57.77, 39.65]}, {'name': 'MSFT', 'data': [24.16, 40.64, 29.42, 36.54]}, {'name': 'AMZN', 'data': [117.44, 177.22, 160.05, 197.71]}]
-	
-	
 	
 	return jsonify(stock_data)
 
