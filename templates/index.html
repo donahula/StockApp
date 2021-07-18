@@ -55,7 +55,9 @@
 			</script>
 
 			<input type="button" id="submit" value="Create Chart" style="height:30px; margin:8px;" onclick="get_data();">
+<script>
 
+</script>
 		</div>
 		<div>
 			<figure id="figure_hc" class="highcharts-figure">
@@ -67,6 +69,7 @@
 				var my_series = [];
 				var series_x_y = [];
 				function get_data() {
+					my_series = [];
 					var selected_stocks = $("li[class=active] input").map(function() {
 						return $(this).val();
 					}).get();
@@ -108,17 +111,21 @@
 												/*series_x_y.push(raw_data[keys[i]].prices[j].close);*/
 												/*series_data.push(series_x_y);
 										}*/
+										
 										var keys = Object.keys(raw_data);
 										for (var i = 0; i < keys.length; i++) {
 											for (var j = 0; j < raw_data[keys[i]].prices.length; j++) {
-												series_data.push(parseFloat(raw_data[keys[i]].prices[j].close.toFixed(2)));
+												series_x_y.push(new Date(raw_data[keys[i]].prices[j].formatted_date).getTime());
+												series_x_y.push(parseFloat(raw_data[keys[i]].prices[j].close.toFixed(2)));
+												series_data.push(series_x_y);
+												series_x_y = [];
 											}
 											my_series.push({
 												'name': keys[i],
 												data: series_data
 											});
 											series_data = [];
-											series_x_y = [];
+											
 										}
 									});
 								}						
@@ -184,7 +191,9 @@
 
 							}
 							console.log(chart_info);
-							Highcharts.chart('container', chart_info);	
+							setTimeout(() => {let chart = Highcharts.chart('container', chart_info);; }, 1000);
+
+
 				}
 			</script>
 		<div>
