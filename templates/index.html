@@ -53,6 +53,15 @@
 				  singleMode: false
 				})
 			</script>
+
+			<input type="button" id="submit" value="Create Chart" style="height:30px; margin:8px;" onclick="get_data();">
+
+		</div>
+		<div>
+			<figure id="figure_hc" class="highcharts-figure">
+				<div id="container"></div>
+			</figure>
+		</div>
 			<script>
 				var series_data = [];
 				var my_series = [];
@@ -81,7 +90,7 @@
 										console.log(data);
 										raw_data = data;
 										/*logic here*/
-										var keys = Object.keys(raw_data);
+										
 										/*series = "["
 										for (var i = 0; i < keys.length; i++) {
 											if (i != 0) {
@@ -95,12 +104,14 @@
 												series = series + raw_data[keys[i]].prices[j].close
 											}
 											series = series + "}]";
+																							/*series_x_y.push(raw_data[keys[i]].prices[j].formatted_date);*/
+												/*series_x_y.push(raw_data[keys[i]].prices[j].close);*/
+												/*series_data.push(series_x_y);
 										}*/
+										var keys = Object.keys(raw_data);
 										for (var i = 0; i < keys.length; i++) {
 											for (var j = 0; j < raw_data[keys[i]].prices.length; j++) {
-												series_x_y.push(raw_data[keys[i]].prices[j].formatted_date);
-												series_x_y.push(raw_data[keys[i]].prices[j].close);
-												series_data.push(series_x_y);
+												series_data.push(parseFloat(raw_data[keys[i]].prices[j].close.toFixed(2)));
 											}
 											my_series.push({
 												'name': keys[i],
@@ -110,86 +121,72 @@
 											series_x_y = [];
 										}
 									});
-								}
+								}						
 							)
 							
 							.catch(function(err) {
 								console.log('Fetch Error :-S', err);
 							});
-							
+
+							var series = [];
+							series = my_series;
+							chart_info = {
+
+								title: {
+									text: 'Daily Stock Price'
+								},
+
+								xAxis: {
+										type: 'datetime',
+										labels: {
+										  format: '{value:%Y-%b-%e}'
+										},
+								},
+								
+								yAxis: {
+									title: {
+										text: 'Price ($)'
+									}
+								},
+
+								legend: {
+									layout: 'vertical',
+									align: 'right',
+									verticalAlign: 'middle'
+								},
+
+								/*plotOptions: {
+									series: {
+										label: {
+											connectorAllowed: false
+										},
+										pointStart: Date.UTC(2021, 6, 5),
+												pointInterval: 3600 * 1000 * 24// 24 hours
+									}
+								},*/
+
+								series: series,
+
+								responsive: {
+									rules: [{
+										condition: {
+											maxWidth: 500
+										},
+										chartOptions: {
+											legend: {
+												layout: 'horizontal',
+												align: 'center',
+												verticalAlign: 'bottom'
+											}
+										}
+									}]
+								}
+
+							}
+							console.log(chart_info);
+							Highcharts.chart('container', chart_info);	
 				}
 			</script>
-			<input type="button" id="submit" value="Submit" style="height:30px; margin:8px;" onclick="get_data();">
-
-		</div>
-		<div>
-			<figure class="highcharts-figure">
-				<div id="container"></div>
-			</figure>
-		</div>
-		<script>
-		var serObj = [
-	{'name':'Series 1', data:[8,9,8,6,5,2,3,6,5,7,4,5,8,9]},
-  {'name':'Series 2', data:[8,5,6,9,8,7,4,5,2,5,8,7,8,6]}
-  ];
-
-var series = [];
- series = my_series;
-
-			Highcharts.chart('container', {
-
-				title: {
-					text: 'Daily Stock Price'
-				},
-
-				xAxis: {
-						type: 'datetime',
-						dateTimeLabelFormats: {
-						   day: '%d %b %Y'    //ex- 01 Jan 2016
-						}
-				},
-				
-				yAxis: {
-					title: {
-						text: 'Price ($)'
-					}
-				},
-
-				legend: {
-					layout: 'vertical',
-					align: 'right',
-					verticalAlign: 'middle'
-				},
-
-				/*plotOptions: {
-					series: {
-						label: {
-							connectorAllowed: false
-						},
-						pointStart: Date.UTC(2021, 6, 5),
-								pointInterval: 3600 * 1000 * 24// 24 hours
-					}
-				},*/
-
-				series: series,
-
-				responsive: {
-					rules: [{
-						condition: {
-							maxWidth: 500
-						},
-						chartOptions: {
-							legend: {
-								layout: 'horizontal',
-								align: 'center',
-								verticalAlign: 'bottom'
-							}
-						}
-					}]
-				}
-
-			});
-		</script>
 		<div>
 			Current Stock Price
 		</div>
