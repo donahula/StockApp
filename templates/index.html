@@ -82,6 +82,7 @@
 						return $(this).val();
 					}).get();
 					
+					
 					start = fp.selectedDates[0].getFullYear() + '-' + (fp.selectedDates[0].getMonth() + 1) + '-' + fp.selectedDates[0].getDate()
 					end = fp.selectedDates[1].getFullYear() + '-' + (fp.selectedDates[1].getMonth() + 1) + '-' + (fp.selectedDates[1].getDate() + 1)
 					
@@ -159,16 +160,6 @@
 									verticalAlign: 'middle'
 								},
 
-								/*plotOptions: {
-									series: {
-										label: {
-											connectorAllowed: false
-										},
-										pointStart: Date.UTC(2021, 6, 5),
-												pointInterval: 3600 * 1000 * 24// 24 hours
-									}
-								},*/
-
 								series: series,
 
 								responsive: {
@@ -188,12 +179,32 @@
 
 							}
 							setTimeout(() => {let chart = Highcharts.chart('container', chart_info);; }, 1000);
+							
+							var item_price = 24.56;
+							$("#current_price").empty();							
+							for (const item of selected_stocks) {
+								/*
+								fetch(url)
+									.then(function() {
+
+									})
+								*/
+								
+								
+								
+								$("#current_price").append('<li>' + item + ': ' + item_price + '</li>');
+							}
+							
+							$("#current_price_container").show();
 
 
 				}
 			</script>
-		<div>
-			Current Stock Price
+			<br><br>
+		<div id="current_price_container" style="display:none;margin:20px;">
+			<h3>Current Stock Price</h3>
+			<ul id="current_price"></ul>
+			
 		</div>
 </body>
 
