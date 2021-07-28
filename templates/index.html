@@ -15,7 +15,8 @@
 	</head>
 	<body>
 		<div>
-			<h1 style="text-align: center;">Nasdaq 100 Stock Info</h1><br>
+			<h1 style="text-align: center;">Nasdaq 100 Daily Stock Prices</h1><br>
+			<h3 style="text-align:center;margin-left:100px;margin-right:100px;margin-top:10px;margin-bottom:20px;">Select one or more stocks and a date range and click "Create Chart" to generate a plot of the closing stock price for each stock overlaid within the date range</h3>
 		</div>
 		<div style="display:flex; justify-content:center">
 			<div id="dropdownselection" style="margin:7px;"> <!--source for multiselect dropdown: https://codepen.io/bruce0205/pen/dvZJeJ-->
@@ -51,10 +52,7 @@
 			
 			<div style="margin:10;"> <strong>Date Range:</strong> <input id="datepicker" type="text"></div>
 			<script>
-				/*let date_selection = new Litepicker({
-				  element: document.getElementById('datepicker'),
-				  singleMode: false
-				})*/
+
 				const fp = flatpickr("#datepicker", {
 					mode: "range",
 					allowInput: false,
@@ -63,141 +61,152 @@
 			</script>
 
 			<input type="button" id="submit" value="Create Chart" style="height:30px; margin:8px;" onclick="get_data();">
-<script>
+			<input type="button" id="clear" value="Clear Selections" style="height:30px; margin:8px;" onclick="clear_data();">
+			
 
-</script>
 		</div>
+		<div><h4 id="error_text" style="text-align:center;color:red;display:none;">Please populate all fields before submitting.</h4></div>
 		<div>
 			<figure id="figure_hc" class="highcharts-figure">
 				<div id="container"></div>
 			</figure>
 		</div>
 			<script>
+				function clear_data(){
+					location.reload();
+				}
+				
 				var series_data = [];
 				var my_series = [];
 				var series_x_y = [];
+				
 				function get_data() {
-					my_series = [];
-					var selected_stocks = $("li[class=active] input").map(function() {
-						return $(this).val();
-					}).get();
-					
-					
-					start = fp.selectedDates[0].getFullYear() + '-' + (fp.selectedDates[0].getMonth() + 1) + '-' + fp.selectedDates[0].getDate()
-					end = fp.selectedDates[1].getFullYear() + '-' + (fp.selectedDates[1].getMonth() + 1) + '-' + (fp.selectedDates[1].getDate() + 1)
-					
-					params = {
-						stocks: selected_stocks,
-						start_date: start,
-						end_date: end
-					}
-					fetch(`${window.origin}/data_query`, {
-						  method: "POST",
-						  credentials: "include",
-						  body: JSON.stringify(params),
-						  cache: "no-cache",
-						  headers: new Headers({
-							"content-type": "application/json"
-						  })
-						})
-							.then(
-								function (response) {
-									if (response.status !== 200) {
-										console.log('Problem. Status code = ' + response.status);
-										return;
-									}
-									response.json().then(function (data) {
-										raw_data = data;
+					var text_selections = $('button[class*="multiselect"]').prop("title");
+					if (fp.selectedDates.length == 0 || text_selections == "None selected") {
+						$('#error_text').css('display','block');
+					} else {
+						$('#error_text').css('display','none');
+						my_series = [];
+						var selected_stocks = $("li[class=active] input").map(function() {
+							return $(this).val();
+						}).get();
+						
+						
+						start = fp.selectedDates[0].getFullYear() + '-' + (fp.selectedDates[0].getMonth() + 1) + '-' + fp.selectedDates[0].getDate()
+						end = fp.selectedDates[1].getFullYear() + '-' + (fp.selectedDates[1].getMonth() + 1) + '-' + (fp.selectedDates[1].getDate() + 1)
+						
+						params = {
+							stocks: selected_stocks,
+							start_date: start,
+							end_date: end
+						}
+						fetch(`${window.origin}/data_query`, {
+							  method: "POST",
+							  credentials: "include",
+							  body: JSON.stringify(params),
+							  cache: "no-cache",
+							  headers: new Headers({
+								"content-type": "application/json"
+							  })
+							})
+								.then(
+									function (response) {
+										if (response.status !== 200) {
+											console.log('Problem. Status code = ' + response.status);
+											return;
+										}
+										response.json().then(function (data) {
+											raw_data = data;
 
-										
-										var keys = Object.keys(raw_data);
-										for (var i = 0; i < keys.length; i++) {
-											for (var j = 0; j < raw_data[keys[i]].prices.length; j++) {
-												series_x_y.push(new Date(raw_data[keys[i]].prices[j].formatted_date).getTime());
-												series_x_y.push(parseFloat(raw_data[keys[i]].prices[j].close.toFixed(2)));
-												series_data.push(series_x_y);
-												series_x_y = [];
-											}
-											my_series.push({
-												'name': keys[i],
-												data: series_data
-											});
-											series_data = [];
 											
-										}
-									});
-								}						
-							)
-							
-							.catch(function(err) {
-								console.log('Fetch Error :-S', err);
-							});
-
-							var series = [];
-							series = my_series;
-							chart_info = {
-
-								title: {
-									text: 'Daily Stock Price'
-								},
-
-								xAxis: {
-										type: 'datetime',
-										labels: {
-										  format: '{value:%Y-%b-%e}'
-										},
-								},
-								
-								yAxis: {
-									title: {
-										text: 'Price ($)'
-									}
-								},
-
-								legend: {
-									layout: 'vertical',
-									align: 'right',
-									verticalAlign: 'middle'
-								},
-
-								series: series,
-
-								responsive: {
-									rules: [{
-										condition: {
-											maxWidth: 500
-										},
-										chartOptions: {
-											legend: {
-												layout: 'horizontal',
-												align: 'center',
-												verticalAlign: 'bottom'
+											var keys = Object.keys(raw_data);
+											for (var i = 0; i < keys.length; i++) {
+												for (var j = 0; j < raw_data[keys[i]].prices.length; j++) {
+													series_x_y.push(new Date(raw_data[keys[i]].prices[j].formatted_date).getTime());
+													series_x_y.push(parseFloat(raw_data[keys[i]].prices[j].close.toFixed(2)));
+													series_data.push(series_x_y);
+													series_x_y = [];
+												}
+												my_series.push({
+													'name': keys[i],
+													data: series_data
+												});
+												series_data = [];
+												
 											}
+										});
+									}						
+								)
+								
+								.catch(function(err) {
+									console.log('Fetch Error :-S', err);
+								});
+
+								var series = [];
+								series = my_series;
+								chart_info = {
+
+									title: {
+										text: 'Daily Stock Price'
+									},
+
+									xAxis: {
+											type: 'datetime',
+											labels: {
+											  format: '{value:%Y-%b-%e}'
+											},
+									},
+									
+									yAxis: {
+										title: {
+											text: 'Price ($)'
 										}
-									}]
+									},
+
+									legend: {
+										layout: 'vertical',
+										align: 'right',
+										verticalAlign: 'middle'
+									},
+
+									series: series,
+
+									responsive: {
+										rules: [{
+											condition: {
+												maxWidth: 500
+											},
+											chartOptions: {
+												legend: {
+													layout: 'horizontal',
+													align: 'center',
+													verticalAlign: 'bottom'
+												}
+											}
+										}]
+									}
+
 								}
-
-							}
-							setTimeout(() => {let chart = Highcharts.chart('container', chart_info);; }, 1000);
-							
-							var item_price = 24.56;
-							$("#current_price").empty();							
-							for (const item of selected_stocks) {
-								/*
-								fetch(url)
-									.then(function() {
-
-									})
-								*/
+								setTimeout(() => {let chart = Highcharts.chart('container', chart_info);; }, 1000);
 								
-								
-								
-								$("#current_price").append('<li>' + item + ': ' + item_price + '</li>');
-							}
-							
-							$("#current_price_container").show();
+								var item_price = 24.56;
+								$("#current_price").empty();							
+								for (const item of selected_stocks) {
+									/*
+									fetch(url)
+										.then(function() {
 
+										})
+									*/
+									
+									
+									
+									$("#current_price").append('<li>' + item + ': ' + item_price + '</li>');
+								}
+								
+								$("#current_price_container").show();
 
+					}
 				}
 			</script>
 			<br><br>
