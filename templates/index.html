@@ -194,12 +194,7 @@
 								$("#current_price").empty();							
 								for (const item of selected_stocks) {
 									url = 'https://cs361-weather-app.herokuapp.com/api/stocks/' + item
-									fetch(url,{
-									   method: 'GET',
-									   headers: {
-										 'Content-Type': 'text/plain'
-										}
-									})
+									fetch(url)
 										.then(
 											data => console.log(data)
 											item_price = data;
