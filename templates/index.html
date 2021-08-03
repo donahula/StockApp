@@ -189,21 +189,21 @@
 								}
 								setTimeout(() => {let chart = Highcharts.chart('container', chart_info);; }, 1000);
 								
-								/*var item_price = 24.56;*/
+								var item_price;
 								$("#current_price").empty();							
 								for (const item of selected_stocks) {
+									proxy = 'https://glacial-fjord-98681.herokuapp.com/'
 									url = 'https://cs361-weather-app.herokuapp.com/api/stocks/' + item
-									/*
-									fetch(url)
-										.then(
-											function(response) {
-											  response.json().then(function(data) {
-												console.log(data);
-											  });										
-											}
-										$("#current_price").append('<li>' + item + ': ' + item_price + '</li>');
-										)
-								*/
+									
+									fetch(proxy+url)
+									  .then(response => response.json())
+									  .then(data => {
+										console.log(data);
+										item_price = data;
+										$("#current_price").append('<li><b>' + item + '</b>: $' + item_price + '</li>');
+									  })
+									
+
 								}
 								$("#current_price_container").show();
 
