@@ -189,19 +189,23 @@
 								}
 								setTimeout(() => {let chart = Highcharts.chart('container', chart_info);; }, 1000);
 								
-								var item_price = 24.56;
+								/*var item_price = 24.56;*/
+								var item_price;
 								$("#current_price").empty();							
 								for (const item of selected_stocks) {
-									/*
-									fetch(url)
-										.then(function() {
+									url = 'https://cs361-weather-app.herokuapp.com/api/stocks/' + item
+									fetch(url,{
+									   method: 'GET',
+									   headers: {
+										 'Content-Type': 'text/plain'
+										}
+									})
+										.then(
+											data => console.log(data)
+											item_price = data;
+										);
 
-										})
-									*/
-									
-									
-									
-									$("#current_price").append('<li>' + item + ': ' + item_price + '</li>');
+									/*$("#current_price").append('<li>' + item + ': ' + item_price + '</li>');*/
 								}
 								
 								$("#current_price_container").show();
