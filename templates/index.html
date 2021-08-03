@@ -193,7 +193,7 @@
 								$("#current_price").empty();							
 								for (const item of selected_stocks) {
 									url = 'https://cs361-weather-app.herokuapp.com/api/stocks/' + item
-									
+									/*
 									fetch(url)
 										.then(
 											function(response) {
@@ -203,8 +203,8 @@
 											}
 										$("#current_price").append('<li>' + item + ': ' + item_price + '</li>');
 										)
+								*/
 								}
-								
 								$("#current_price_container").show();
 
 					}
