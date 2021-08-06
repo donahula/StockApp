@@ -7,7 +7,6 @@
 		<script src="https://code.highcharts.com/modules/exporting.js"></script>
 		<script src="https://code.highcharts.com/modules/export-data.js"></script>
 		<script src="https://code.highcharts.com/modules/accessibility.js"></script>
-		<!--<link rel="stylesheet" href= "{{ url_for('static',filename='css/mystyle.css') }}>-->
 		
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 		<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -37,7 +36,6 @@
 				<div class="">
 					<strong>Select Stock(s):</strong>
 					<select id="multiple-checkboxes" multiple="multiple">
-						<!--<option value="AAPL">AAPL</option>-->
 						<script>
 							let stock_list = {{ stocks | tojson }};
 							for (i in stock_list){ 
@@ -60,7 +58,7 @@
 				});
 			</script>
 
-			<input type="button" id="submit" value="Create Chart" style="height:30px; margin:8px;" onclick="get_data();">
+			<input type="button" id="submit" value="Create Chart" style="height:30px; margin:8px;" onclick="get_data();display_current_price(params);">
 			<input type="button" id="clear" value="Clear Selections" style="height:30px; margin:8px;" onclick="clear_data();">
 			
 
@@ -76,7 +74,7 @@
 					location.reload();
 				}
 				
-				var series_data = [];
+				var highchart_series_data = [];
 				var my_series = [];
 				var series_x_y = [];
 				
@@ -86,20 +84,10 @@
 						$('#error_text').css('display','block');
 					} else {
 						$('#error_text').css('display','none');
+						
+						params = initializeParameters(fp);
+						
 						my_series = [];
-						var selected_stocks = $("li[class=active] input").map(function() {
-							return $(this).val();
-						}).get();
-						
-						
-						start = fp.selectedDates[0].getFullYear() + '-' + (fp.selectedDates[0].getMonth() + 1) + '-' + fp.selectedDates[0].getDate()
-						end = fp.selectedDates[1].getFullYear() + '-' + (fp.selectedDates[1].getMonth() + 1) + '-' + (fp.selectedDates[1].getDate() + 1)
-						
-						params = {
-							stocks: selected_stocks,
-							start_date: start,
-							end_date: end
-						}
 						fetch(`${window.origin}/data_query`, {
 							  method: "POST",
 							  credentials: "include",
@@ -117,21 +105,19 @@
 										}
 										response.json().then(function (data) {
 											raw_data = data;
-
-											
 											var keys = Object.keys(raw_data);
 											for (var i = 0; i < keys.length; i++) {
 												for (var j = 0; j < raw_data[keys[i]].prices.length; j++) {
 													series_x_y.push(new Date(raw_data[keys[i]].prices[j].formatted_date).getTime());
 													series_x_y.push(parseFloat(raw_data[keys[i]].prices[j].close.toFixed(2)));
-													series_data.push(series_x_y);
+													highchart_series_data.push(series_x_y);
 													series_x_y = [];
 												}
 												my_series.push({
 													'name': keys[i],
-													data: series_data
+													data: highchart_series_data
 												});
-												series_data = [];
+												highchart_series_data = [];
 												
 											}
 										});
@@ -188,31 +174,52 @@
 
 								}
 								setTimeout(() => {let chart = Highcharts.chart('container', chart_info);; }, 1000);
-								
-								var item_price;
-								$("#current_price").empty();							
-								for (const item of selected_stocks) {
-									proxy = 'https://glacial-fjord-98681.herokuapp.com/'
-									url = 'https://cs361-weather-app.herokuapp.com/api/stocks/' + item
-									
-									fetch(proxy+url)
-									  .then(response => response.json())
-									  .then(data => {
-										console.log(data);
-										item_price = data;
-										$("#current_price").append('<li><b>' + item + '</b>: $' + item_price + '</li>');
-									  })
-									
-
-								}
-								$("#current_price_container").show();
-
 					}
 				}
+				function initializeParameters(fp) {
+					var selected_stocks = $("li[class=active] input").map(function() {
+						return $(this).val();
+					}).get();
+					
+					start = fp.selectedDates[0].getFullYear() + '-'
+							+ (fp.selectedDates[0].getMonth() + 1) + '-'
+							+ fp.selectedDates[0].getDate()
+					end = fp.selectedDates[1].getFullYear() + '-'
+						  + (fp.selectedDates[1].getMonth() + 1) + '-'
+						  + (fp.selectedDates[1].getDate() + 1)
+					
+					stock_params = {
+						stocks: selected_stocks,
+						start_date: start,
+						end_date: end
+					}	
+					return stock_params;
+				}
+				
+				function display_current_price(params) {
+					var item_price;
+					$("#current_price").empty();							
+					for (const item of params.stocks) {
+						proxy = 'https://glacial-fjord-98681.herokuapp.com/'
+						url = 'https://cs361-weather-app.herokuapp.com/api/stocks/' + item
+						
+						fetch(proxy+url)
+						  .then(response => response.json())
+						  .then(data => {
+							console.log(data);
+							item_price = data;
+							$("#current_price").append('<li><b>' + item + '</b>: $' + item_price + '</li>');
+						  })
+					}
+					let today = new Date()
+					$("#timestamp").text(' ('+today+')');
+					$("#current_price_container").show();	
+				}
+				
 			</script>
 			<br><br>
 		<div id="current_price_container" style="display:none;margin:20px;">
-			<h3>Current Stock Price</h3>
+			<h3>Current Stock Price<span id="timestamp"></span></h3>
 			<ul id="current_price"></ul>
 			
 		</div>
